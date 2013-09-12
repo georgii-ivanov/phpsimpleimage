@@ -181,8 +181,33 @@ class SimpleImage
          * @return string
          */
         
-        public function getType() {
+        public function getType() 
+        {
                  return image_type_to_mime_type($this->type);
+        }
+
+	/**
+         * Get image GD object
+         * 
+         * @return gd resource
+         */
+        
+        public function getGD() 
+        {
+                 return $this->image;
+        }
+        
+        /**
+         * Get image source from GD object without ouput uses output buffering
+         * 
+         * @return string
+         */
+        
+        public function getSource() 
+        {
+                 ob_start();
+                 $this->output();
+                 return ob_end_clean();
         }
         
         /**
@@ -332,5 +357,16 @@ class SimpleImage
 		
 		return $this;
 	}
+        
+        /**
+         * Get image source and display
+         * 
+         * @return string
+         */
+        
+        public function __toString() {
+                header('Content-Type: '.$this->getType());
+                return $this->getSource();
+        }
 }
 ?>
