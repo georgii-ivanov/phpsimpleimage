@@ -184,16 +184,6 @@ class SimpleImage
         public function getType() {
                  return image_type_to_mime_type($this->type);
         }
-
-	/**
-         * Get image GD object
-         * 
-         * @return gd resource
-         */
-        
-        public function getGD() {
-                 return $this->image;
-        }
         
         /**
          * Resize image by height $height px
