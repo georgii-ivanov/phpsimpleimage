@@ -140,6 +140,8 @@ class SimpleImage
 
 	public function output() 
 	{
+                header('Content-Type: '.$this->getType());
+                
 		if( $this->type == IMAGETYPE_JPEG ) {
 			imagejpeg($this->image, null, $this->quality);
 		} elseif( $this->type == IMAGETYPE_GIF ) {
@@ -365,7 +367,6 @@ class SimpleImage
          */
         
         public function __toString() {
-                header('Content-Type: '.$this->getType());
                 return $this->getSource();
         }
 }
