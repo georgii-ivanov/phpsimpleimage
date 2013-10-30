@@ -10,11 +10,7 @@
 
 class SimpleDrawing extends SimpleImage
 {
-    const RGB_COLOR = 0;
-    const HSV_COLOR = 1;
-    
-    private $color = array(0,0,0);
-    private $mode = SimpleDrawing::RGB_COLOR; //future support, use convert method
+    private $color = array(0,0,0,0);
     
     /**
      * Get current color info
@@ -35,69 +31,16 @@ class SimpleDrawing extends SimpleImage
     
     public function getGDColor() 
     {
-        list($red, $green, $blue) = $this->color;
-        return imagecolorallocate($this->image, $red, $green, $blue);
-    }
-    
-    /**
-     * Convert hsv to rgb color
-     * 
-     * @param type $color
-     * @return type
-     */
-    
-    public function hsv2rgb($color) 
-    {
-        list($h, $s, $v) = $color;
-        $s /= 256.0;
-        if ($s == 0.0) return array($v,$v,$v);
-        $h /= (256.0 / 6.0);
-        $i = floor($h);
-        $f = $h - $i;
-        $p = (integer)($v * (1.0 - $s));
-        $q = (integer)($v * (1.0 - $s * $f));
-        $t = (integer)($v * (1.0 - $s * (1.0 - $f)));
-        switch($i) {
-        case 0: return array($v,$t,$p);
-        case 1: return array($q,$v,$p);
-        case 2: return array($p,$v,$t);
-        case 3: return array($p,$q,$v);
-        case 4: return array($t,$p,$v);
-        default: return array($v,$p,$q);
-        }
-    }
-    
-    /**
-     * Convert rgb to hsv color mode
-     * 
-     * @param type $color
-     * @return type
-     */
-    
-    public function rgb2hsv($color) 
-    {
-        list($r,$g,$b)=$color; 
-        $v=max($r,$g,$b); 
-        $t=min($r,$g,$b); 
-        $s=($v==0)?0:($v-$t)/$v; 
-        if ($s==0) 
-         $h=-1; 
-        else { 
-         $a=$v-$t; 
-         $cr=($v-$r)/$a; 
-         $cg=($v-$g)/$a; 
-         $cb=($v-$b)/$a; 
-         $h=($r==$v)?$cb-$cg:(($g==$v)?2+$cr-$cb:(($b==$v)?$h=4+$cg-$cr:0)); 
-         $h=60*$h; 
-         $h=($h<0)?$h+360:$h; 
-        } 
-        return array($h,$s,$v); 
+        @list($red, $green, $blue, $alpha) = $this->color;
+        return ($alpha == 0) ? 
+            imagecolorallocate($this->image, $red, $green, $blue) : 
+            imagecolorallocatealpha($this->image, $red, $green, $blue, $alpha);
     }
     
     /**
      * Set current color
      * 
-     * @param type $color
+     * @param array $color
      * @return \SimpleDrawing
      */
     
@@ -225,6 +168,17 @@ class SimpleDrawing extends SimpleImage
     public function fill($x = 0, $y = 0) 
     {
         return $this->filledRect($x, $y, $this->getWidth(), $this->getHeight());
+    }
+    
+    /**
+     * Fill image by rectangle
+     * 
+     * @return type
+     */
+    
+    public function getPixel($x, $y) 
+    {
+        return array_values(imagecolorsforindex($this->image, imagecolorat($this->image, $x, $y)));
     }
     
     /**
