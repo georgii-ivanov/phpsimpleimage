@@ -3,7 +3,15 @@
         
 	include "SimpleImage.php";
 	
-	$img = new SimpleImage('filename' => 'forest.png');
+	// resize image example
 	
-	$img->resizeTo(300, 200)->output();
+	$img = new SimpleImage();
+	
+	$img->loadFile('forest.png')->resizeTo(300, 200)->output();
+	
+	//drawing example
+	
+	$drawing = new SimpleDrawing();
+	
+	$drawing->loadFile('forest.png')->resizeTo(300, 200)->line(0, 0, 300, 200)->output();
 ?>
