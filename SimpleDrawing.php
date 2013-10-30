@@ -14,7 +14,7 @@ class SimpleDrawing extends SimpleImage
     const HSV_COLOR = 1;
     
     private $color = array(0,0,0);
-    private $mode = SimpleImage::RGB_COLOR; //future support, use convert method
+    private $mode = SimpleDrawing::RGB_COLOR; //future support, use convert method
     
     /**
      * Get current color info
