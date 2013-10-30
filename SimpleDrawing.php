@@ -171,7 +171,7 @@ class SimpleDrawing extends SimpleImage
     }
     
     /**
-     * Fill image by rectangle
+     * Get pixel color
      * 
      * @return type
      */
