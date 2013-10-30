@@ -13,5 +13,5 @@
 	
 	$drawing = new SimpleDrawing();
 	
-	$drawing->loadFile('forest.png')->resizeTo(300, 200)->line(0, 0, 300, 200)->output();
+	$drawing->loadFile('forest.png')->resizeTo(300, 200)->setColor(array(255,0,0))->line(0, 0, 300, 200)->output();
 ?>
