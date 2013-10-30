@@ -2,6 +2,7 @@
         //prints resized image with header
         
 	include "SimpleImage.php";
+	include "SimpleDrawing.php";
 	
 	// resize image example
 	
