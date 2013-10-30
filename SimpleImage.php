@@ -10,11 +10,12 @@
 
 class SimpleImage 
 {
-	private $image;
-        private $source;
+	protected $image;
+        
+        private $filename;
 	private $type = IMAGETYPE_JPEG;
-	private $quality = 80;
-	private $filename = null;
+        private $quality = 80;
+        
 	private $save_alpha = true;
 	private $alpha_blending = false;
 
@@ -26,30 +27,24 @@ class SimpleImage
         
 	public function __construct($config = array())
 	{
-		foreach($config as $k=>$v) {
+		foreach($config as $k=>$v)
 			$this->$k = $v;
-		}
 	}
         
         /**
-         * Create new image $width x $height
+         * Loading image from GD
          * 
-         * @param type $width
-         * @param type $height
-         * @return \SimpleImage
+         * @param type $image
          */
-	
-	public function create($width, $height) 
-	{
-		$img = imagecreatetruecolor($width, $height); 
-		imagecolortransparent($img, imagecolorallocate($img, 0, 0, 0));
-		imagealphablending($img, $this->alpha_blending);
-		imagesavealpha($img, $this->save_alpha);
-		
-		$this->image = $img;
-		
-		return $this;
-	}
+        
+        public function load($image) 
+        {
+                $this->image = $image;
+                
+                imagecolortransparent($image, imagecolorallocate($image, 0, 0, 0));
+		imagealphablending($image, $this->alpha_blending);
+		imagesavealpha($image, $this->save_alpha);
+        }
         
         /**
          * Loads image from file
@@ -58,24 +53,21 @@ class SimpleImage
          * @throws Exception
          */
 
-	public function loadFile() 
+	public function loadFile($filename) 
 	{
-		$filename = $this->filename;
-		$image_info = getimagesize($filename);
-
-		$this->filename = $filename;
 		if (!file_exists($filename))
 			throw new Exception("Image file doesn't exists");
 		
-		$this->type = $image_info[2];
-		$this->image = imagecreatefromstring(file_get_contents($filename));
+		$image = imagecreatefromstring(file_get_contents($filename));
 		
-		if (!$this->image)
+		if (!$image)
 			throw new Exception("Cannot create image from file. Invalid file data");
 		
-		imagecolortransparent($this->image, imagecolorallocate($this->image, 0, 0, 0));
-		imagealphablending($this->image, $this->alpha_blending);
-		imagesavealpha($this->image, $this->save_alpha);
+		$image_info = getimagesize($filename);
+		$this->type = $image_info[2];
+                $this->filename = $filename;
+                
+                $this->load($image);
 		
 		return $this;
 	}
@@ -87,24 +79,17 @@ class SimpleImage
          * @throws Exception
          */
         
-        public function loadSource()
+        public function loadSource($source)
         {
-               $source = $this->source;
-               $image_info = getimagesizefromstring($source);
+	       $image = imagecreatefromstring($source);
                
-               $this->filename = null;
-               
-               $this->type = $image_info[2];
-               
-               $this->type = $image_info[2];
-	       $this->image = imagecreatefromstring($source);
-               
-               if (!$this->image)
+               if (!$image)
 			throw new Exception("Cannot create image from source. Invalid source");
                
-               imagecolortransparent($this->image, imagecolorallocate($this->image, 0, 0, 0));
-	       imagealphablending($this->image, $this->alpha_blending);
-	       imagesavealpha($this->image, $this->save_alpha);
+               $image_info = getimagesizefromstring($source);
+               $this->type = $image_info[2];
+               
+               $this->load($image);
                
 	       return $this;
         }
@@ -116,14 +101,22 @@ class SimpleImage
          * @throws Exception
          */
 
-	public function save() 
-	{
+	public function save($filename = null, $type = null, $quality = 80) 
+	{  
+                if ($filename === null)
+                    $filename = $this->filename;
+                if ($type === null)
+                    $type = $this->type;
+            
+                if ($filename === null)
+                    throw('No output filename specified');
+            
 		if( $this->type == IMAGETYPE_JPEG ) {
-			imagejpeg($this->image,$this->filename,$this->quality);
+			imagejpeg($this->image,$filename,$quality);
 		} elseif( $this->type == IMAGETYPE_GIF ) {
-			imagegif($this->image,$this->filename); 
+			imagegif($this->image,$filename); 
 		} elseif( $this->type == IMAGETYPE_PNG ) {
-			imagepng($this->image,$this->filename);
+			imagepng($this->image,$filename);
 		} else {
 			throw new Exception("Unknown save filetype format");
 		}
@@ -296,6 +289,21 @@ class SimpleImage
 		
 		return $this;
 	}
+        
+        /**
+         * Crop alias cut
+         * 
+         * @param type $x
+         * @param type $y
+         * @param type $width
+         * @param type $height
+         * @return \SimpleImage
+         */
+        
+        public function crop($x, $y, $width, $height)
+	{
+                return $this->cut($x, $y, $width, $height);
+        }
         
         /**
          * Resize image to bbox on $width x $height pixels (optional resize)
