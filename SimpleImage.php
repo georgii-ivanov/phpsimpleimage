@@ -101,12 +101,14 @@ class SimpleImage
          * @throws Exception
          */
 
-	public function save($filename = null, $type = null, $quality = 80) 
+	public function save($filename = null, $type = null, $quality = null) 
 	{  
                 if ($filename === null)
                     $filename = $this->filename;
                 if ($type === null)
                     $type = $this->type;
+                if ($quality === null)
+                    $quality = $this->quality;
             
                 if ($filename === null)
                     throw('No output filename specified');
