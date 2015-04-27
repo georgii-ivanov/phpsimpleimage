@@ -182,6 +182,17 @@ class SimpleDrawing extends SimpleImage
     }
     
     /**
+     * Set pixel color
+     * 
+     * @return type
+     */
+     
+    public function setPixel($x, $y) 
+    {
+        return imagesetpixel($this->image, int $x, int $y , $this->getGDColor($this->color));
+    }
+    
+    /**
      * Create new GD image
      * 
      * @param type $width
