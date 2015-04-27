@@ -189,7 +189,7 @@ class SimpleDrawing extends SimpleImage
      
     public function setPixel($x, $y) 
     {
-        return imagesetpixel($this->image, int $x, int $y , $this->getGDColor($this->color));
+        return imagesetpixel($this->image, $x, $y , $this->getGDColor($this->color));
     }
     
     /**
